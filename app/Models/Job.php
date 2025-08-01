@@ -2,46 +2,29 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Job
+class Job extends Model
 {
-    public static function all(): array
+    use HasFactory;
+
+    protected $table = 'job_listing';
+
+    protected $fillable = [
+        'title',
+        'location',
+        'description',
+        'compensation'
+    ];
+
+    public function employer()
     {
-        return [
-            [
-                'id' => 1,
-                'title' => 'Software Engineer',
-                'company' => 'Google',
-                'location' => 'Mountain View, CA',
-                'description' => 'Google is looking for a software engineer to join our team.',
-                'compensation' => '$100,000 - $150,000'
-            ],
-            [
-                'id' => 2,
-                'title' => 'Software Engineer',
-                'company' => 'Facebook',
-                'location' => 'Menlo Park, CA',
-                'description' => 'Facebook is looking for a software engineer to join our team.',
-                'compensation' => '$100,000 - $150,000'
-            ],
-            [
-                'id' => 3,
-                'title' => 'Software Engineer',
-                'company' => 'Amazon',
-                'location' => 'Seattle, WA',
-                'description' => 'Amazon is looking for a software engineer to join our team.',
-                'compensation' => '$100,000 - $150,000'
-            ]
-        ];
+        return $this->belongsTo(Employer::class);
     }
 
-    public static function find($id): array
+    public function tags()
     {
-        $job = Arr::first(self::all(), fn ($job) => $job['id'] === (int) $id);
-        if (!$job) {
-            abort(404);
-        }
-        return $job;
+        return $this->belongsToMany(\App\Models\Tag::class, foreignPivotKey: 'job_listing_id');
     }
 }
