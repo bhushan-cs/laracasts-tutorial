@@ -15,8 +15,12 @@ class Job extends Model
         'title',
         'location',
         'description',
-        'compensation'
+        'compensation',
+        'employer_id'
     ];
+
+    // to remove annoying fillable warning
+    protected $guarded = [];
 
     public function employer()
     {
